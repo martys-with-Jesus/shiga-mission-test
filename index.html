@@ -18,7 +18,35 @@ const names={schedule:['SCHEDULE','선교 일정','11월 12일부터 15일까지
 const e=t=>String(t).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 function page(k){if(!names[k]){document.getElementById('home').classList.remove('hidden');document.getElementById('page').classList.add('hidden');return;}document.getElementById('home').classList.add('hidden');document.getElementById('page').classList.remove('hidden');document.getElementById('pageLabel').textContent=names[k][0];document.getElementById('pageTitle').textContent=names[k][1];document.getElementById('pageDesc').textContent=names[k][2];document.getElementById('pageContent').innerHTML=data[k].map(([t,b])=>'<article class="card"><h3>'+e(t)+'</h3><p>'+e(b)+'</p></article>').join('');window.scrollTo(0,0)}
 document.querySelectorAll('[data-page]').forEach(b=>b.addEventListener('click',()=>page(b.dataset.page)));document.getElementById('backBtn').addEventListener('click',()=>page('home'));
-document.getElementById('adminBtn').addEventListener('click',()=>{const el=document.getElementById('adminPanel');el.classList.toggle('hidden');if(!el.classList.contains('hidden')){document.getElementById('adminStatus').textContent='관리자 로그인은 GitHub Pages 배포 주소에서 사용해 주세요.';el.scrollIntoView()}});
+document.getElementById('adminBtn').addEventListener('click',()=>{const el=document.getElementById('adminPanel');el.classList.toggle('hidden');if(!el.classList.contains('hidden')){document.getElementById('adminStatus').textContent='Firebase 로그인 준비 중…';el.scrollIntoView()}});
 })();
+</script>
+
+<script type="module">
+import {initializeApp} from 'https://www.gstatic.com/firebasejs/10.12.5/firebase-app.js';
+import {getAuth,onAuthStateChanged,signInWithEmailAndPassword,signOut} from 'https://www.gstatic.com/firebasejs/10.12.5/firebase-auth.js';
+const config={apiKey:'AIzaSyDpG-tEI2-A6vFnbIO2p9IkQ92hovUX5As',authDomain:'shiga-mission-2026.firebaseapp.com',projectId:'shiga-mission-2026',storageBucket:'shiga-mission-2026.firebasestorage.app',messagingSenderId:'56822923791',appId:'1:56822923791:web:9cfb896f728974ea72597a',measurementId:'G-Z1CGQQE0ZM'};
+const $=id=>document.getElementById(id);
+const status=(message)=>{$('adminStatus').textContent=message;};
+try {
+ const app=initializeApp(config);
+ const auth=getAuth(app);
+ onAuthStateChanged(auth,user=>{
+  $('loginForm').classList.toggle('hidden',!!user);
+  $('loggedIn').classList.toggle('hidden',!user);
+  status(user?'Firebase 로그인 성공 · '+user.email+' (편집 기능은 다음 단계에서 연결합니다.)':'관리자 계정으로 로그인해 주세요.');
+ });
+ $('loginBtn').addEventListener('click',async()=>{
+  const email=$('email').value.trim(), password=$('password').value;
+  if(!email||!password){status('이메일과 비밀번호를 모두 입력해 주세요.');return;}
+  $('loginBtn').disabled=true;status('로그인 확인 중…');
+  try{await signInWithEmailAndPassword(auth,email,password);$('password').value='';}
+  catch(err){const messages={'auth/invalid-credential':'이메일 또는 비밀번호가 일치하지 않습니다.','auth/invalid-email':'이메일 주소 형식을 확인해 주세요.','auth/too-many-requests':'로그인 시도가 많아 잠시 후 다시 시도해 주세요.','auth/network-request-failed':'네트워크 연결을 확인해 주세요.','auth/operation-not-allowed':'Firebase에서 이메일/비밀번호 로그인을 활성화해 주세요.','auth/unauthorized-domain':'Firebase 인증의 승인된 도메인에 martys-with-jesus.github.io를 추가해야 합니다.'};status(messages[err.code]||'로그인 오류: '+(err.code||err.message));}
+  finally{$('loginBtn').disabled=false;}
+ });
+ $('password').addEventListener('keydown',e=>{if(e.key==='Enter')$('loginBtn').click();});
+ $('logoutBtn').addEventListener('click',async()=>{try{await signOut(auth);}catch(err){status('로그아웃 오류: '+err.message);}});
+ $('addBtn').addEventListener('click',()=>status('로그인은 연결됐습니다. 데이터 편집 기능은 다음 단계에서 연결합니다.'));
+} catch(err){status('Firebase 초기화 오류: '+err.message);}
 </script>
 </body></html>
