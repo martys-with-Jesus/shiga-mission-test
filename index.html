@@ -44,7 +44,11 @@ function scheduleRows(body){return String(body||'').split(/\n+/).filter(line=>li
 let selectedSongId=null;
 const SONG_PARTS=[['verse1','1절'],['verse2','2절'],['chorus','후렴'],['bridge','브릿지']];
 function renderSongDetail(x){
- const audio=safeURL(x.audioURL),score=safeURL(x.scoreURL);
+ // GitHub Pages audio files: audio/song_01.mp3 ... audio/song_06.mp3.
+ // Explicit Firebase audioURL takes priority if set by the administrator.
+ const songIndex=SEED.songs.findIndex(([title])=>title===x.title);
+ const githubAudio=songIndex>=0?`./audio/song_${String(songIndex+1).padStart(2,'0')}.mp3`:'';
+ const audio=safeURL(x.audioURL)||githubAudio,score=safeURL(x.scoreURL);
  const hasParts=x.parts&&Object.values(x.parts).some(p=>p&&(p.japanese||p.pronunciation||p.korean));
  const blocks=hasParts?SONG_PARTS.filter(([key])=>{const p=x.parts[key];return p&&(p.japanese||p.pronunciation||p.korean)}).map(([key,label])=>{
   const p=x.parts[key];return `<section class="song-part"><h4>${label}</h4>${[['japanese','일본어 가사'],['pronunciation','한국어 발음'],['korean','한국어 뜻']].map(([field,heading])=>`<div class="lyric-line"><span class="lyric-label">${heading}</span><div class="detail">${p[field]?esc(p[field]):'<span class="notice">미등록</span>'}</div></div>`).join('')}</section>`;
