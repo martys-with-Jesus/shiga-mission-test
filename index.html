@@ -49,7 +49,7 @@ let records=[],current='home',ready=false,failed=false;
 function visible(type){const saved=records.filter(x=>x.type===type);const base=SEED[type].map(([title,body],i)=>({id:'seed_'+type+'_'+i,type,title,body,order:i,seed:true}));const hidden=new Set(saved.filter(x=>x.deleted).map(x=>x.id));const map=new Map(base.map(x=>[x.id,x]));for(const x of saved){if(!x.deleted)map.set(x.id,x);else map.delete(x.id)}return [...map.values()].filter(x=>!hidden.has(x.id)).sort((a,b)=>(a.order??9999)-(b.order??9999));}
 function scheduleRows(body){return String(body||'').split(/\n+/).filter(line=>line.trim()).map(line=>{const match=line.match(/^\s*(오전[·\s]*오후|오전|오후|점심|저녁|\d{1,2}:\d{2}(?:경)?|\d{1,2}시(?:\s*\d{1,2}분)?(?:경)?)\s*[·:：-]\s*(.+)$/);return match?`<div class="schedule-row"><span class="schedule-time">${esc(match[1].replace(/\s+/g,' '))}</span><span class="schedule-event">${esc(match[2])}</span></div>`:`<div class="schedule-row"><span class="schedule-time schedule-time-empty"></span><span class="schedule-event">${esc(line.trim())}</span></div>`}).join('')}
 let selectedSongId=null;
-const SONG_PARTS=[['verse1','1절'],['verse2','2절'],['chorus','후렴'],['bridge','브릿지']];
+const SONG_PARTS=[['verse1','1절'],['verse2','2절'],['verse3','3절'],['chorus','후렴'],['bridge','브릿지']];
 function renderSongDetail(x){
  // GitHub Pages audio files: audio/song_01.mp3 ... audio/song_06.mp3.
  // Explicit Firebase audioURL takes priority if set by the administrator.
@@ -59,7 +59,7 @@ function renderSongDetail(x){
  const hasParts=x.parts&&Object.values(x.parts).some(p=>p&&(p.japanese||p.pronunciation||p.korean));
  const blocks=hasParts?SONG_PARTS.filter(([key])=>{const p=x.parts[key];return p&&(p.japanese||p.pronunciation||p.korean)}).map(([key,label])=>{
   const p=x.parts[key];return `<section class="song-part"><h4>${label}</h4>${[['japanese','일본어 가사'],['pronunciation','한국어 발음'],['korean','한국어 뜻']].map(([field,heading])=>`<div class="lyric-line"><span class="lyric-label">${heading}</span><div class="detail">${p[field]?esc(p[field]):'<span class="notice">미등록</span>'}</div></div>`).join('')}</section>`;
- }).join(''):[`<p class="notice">절별 가사를 아직 등록하지 않았습니다. 관리자가 1절·2절·후렴·브릿지별로 입력할 수 있습니다.</p>${[['japanese','일본어 가사 (기존)'],['pronunciation','한국어 발음 (기존)'],['korean','한국어 뜻 (기존)']].filter(([k])=>x[k]).map(([k,label])=>`<div class="song-section"><strong>${label}</strong><div class="detail">${esc(x[k])}</div></div>`).join('')}`].join('');
+ }).join(''):[`<p class="notice">절별 가사를 아직 등록하지 않았습니다. 관리자가 1절·2절·3절·후렴·브릿지별로 입력할 수 있습니다.</p>${[['japanese','일본어 가사 (기존)'],['pronunciation','한국어 발음 (기존)'],['korean','한국어 뜻 (기존)']].filter(([k])=>x[k]).map(([k,label])=>`<div class="song-section"><strong>${label}</strong><div class="detail">${esc(x[k])}</div></div>`).join('')}`].join('');
  return `<div class="song-detail"><button class="song-detail-back" id="songListBack" type="button">← 찬양 목록으로</button><article class="card"><div class="tag">WORSHIP · SONG</div><h3>${esc(x.title)}</h3><div class="song-section"><strong>음원 듣기</strong>${audio?`<audio class="song-audio" controls preload="none" src="${esc(audio)}"></audio>`:'<p class="notice">등록된 음원이 없습니다.</p>'}</div>${blocks}${score?`<div class="song-section"><a href="${esc(score)}" target="_blank" rel="noopener noreferrer">악보 보기 ↗</a></div>`:''}</article></div>`;
 }
 
@@ -102,7 +102,7 @@ import {getFirestore,collection,onSnapshot,doc,setDoc,deleteDoc} from 'https://w
 import {getStorage,ref,uploadBytes,getDownloadURL} from 'https://www.gstatic.com/firebasejs/10.12.5/firebase-storage.js';
 const config={apiKey:'AIzaSyDpG-tEI2-A6vFnbIO2p9IkQ92hovUX5As',authDomain:'shiga-mission-2026.firebaseapp.com',projectId:'shiga-mission-2026',storageBucket:'shiga-mission-2026.firebasestorage.app',messagingSenderId:'56822923791',appId:'1:56822923791:web:9cfb896f728974ea72597a',measurementId:'G-Z1CGQQE0ZM'};
 const $=id=>document.getElementById(id);const esc=x=>String(x??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
-const SONG_PARTS=[['verse1','1절'],['verse2','2절'],['chorus','후렴'],['bridge','브릿지']];
+const SONG_PARTS=[['verse1','1절'],['verse2','2절'],['verse3','3절'],['chorus','후렴'],['bridge','브릿지']];
 let auth,db,storage,user=null,editing=null,rows=[];const col='shiga_site_items';
 const status=x=>{ $('adminStatus').textContent=x; const box=$('editorStatus'); if(box) box.textContent=x; };
 function editList(){const type=$('editType').value;$('editList').innerHTML=window.SHIGA.visible(type).map(x=>`<div class="edit-card"><strong>${esc(x.title)}</strong><p class="notice">${esc(x.body||'').slice(0,180)}</p><div class="actions"><button class="action secondary" data-edit="${esc(x.id)}">수정</button><button class="action secondary" data-del="${esc(x.id)}">삭제</button></div></div>`).join('');$('editList').querySelectorAll('[data-edit]').forEach(b=>b.onclick=()=>openEdit(b.dataset.edit));$('editList').querySelectorAll('[data-del]').forEach(b=>b.onclick=()=>remove(b.dataset.del));}
