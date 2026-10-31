@@ -45,6 +45,41 @@ html,body{width:100%;max-width:100%;overflow-x:hidden}main,header,.shell,.menu,.
 .song-jump-btn:focus-visible{outline:3px solid #87ac9a;outline-offset:2px}
 .aligned-song-part{scroll-margin-top:16px}
 @media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}}
+
+/* Compact worship detail spacing (mobile + desktop). Visual-only changes. */
+#page:has(.song-detail) .page-head{margin:12px 0 14px}
+#page:has(.song-detail) .page-head h2{margin:5px 0 6px}
+#page:has(.song-detail) .page-head p{line-height:1.45}
+#page:has(.song-detail) .song-detail-back{padding:2px 0 7px}
+#page:has(.song-detail) .song-switch-label{margin:0 0 5px}
+#page:has(.song-detail) .song-switcher{padding:0 1px 5px;margin:0 0 9px;gap:7px}
+#page:has(.song-detail) .song-switch{padding:8px 12px}
+#page:has(.song-detail) .card{padding:14px;margin-bottom:8px}
+#page:has(.song-detail) .song-detail h3{margin:3px 0 9px;line-height:1.3}
+#page:has(.song-detail) .song-section{padding:10px 0}
+#page:has(.song-detail) .song-section strong{margin-bottom:5px}
+#page:has(.song-detail) .song-audio{margin:5px 0 0}
+#page:has(.song-detail) .song-jump-wrap{margin:7px 0 11px;padding:0}
+#page:has(.song-detail) .song-jump-label{margin:0 0 7px}
+#page:has(.song-detail) .song-jump-nav{gap:6px}
+#page:has(.song-detail) .song-jump-btn{padding:7px 12px}
+#page:has(.song-detail) .aligned-song-part{margin:10px 0 14px}
+#page:has(.song-detail) .aligned-song-part h4{padding:10px 12px;margin:0 0 5px}
+#page:has(.song-detail) .aligned-lyric-line{padding:10px 1px}
+#page:has(.song-detail) .aligned-pron,#page:has(.song-detail) .aligned-meaning{margin-top:3px}
+
+/* 2026-10-31: tighter spacing on worship song details only */
+#page:has(.song-detail) .song-detail .song-section{padding:5px 0}
+#page:has(.song-detail) .song-detail .song-audio{margin:3px 0 0}
+#page:has(.song-detail) .song-jump-wrap{margin:3px 0 7px;padding:0}
+#page:has(.song-detail) .song-jump-label{margin-bottom:5px}
+#page:has(.song-detail) .song-jump-btn{padding:6px 11px}
+#page:has(.song-detail) .aligned-song-part{margin:6px 0 10px}
+#page:has(.song-detail) .aligned-song-part h4{padding:9px 12px;margin-bottom:2px}
+#page:has(.song-detail) .aligned-lyric-line{padding:7px 1px}
+#page:has(.song-detail) .aligned-jp{line-height:1.35}
+#page:has(.song-detail) .aligned-pron{line-height:1.4;margin-top:2px}
+#page:has(.song-detail) .aligned-meaning{line-height:1.4;margin-top:2px}
 </style></head><body>
 <header><div class="shell"><div class="top"><span class="brand">MARTYS <span style="color:#83a497">/</span> JAPAN</span><button class="admin-link" id="adminBtn" type="button">관리자</button></div><h1>SHIGA<br/>MISSION 2026<span style="color:#89ad9c">.</span></h1><p class="hero-sub">하나님께 시간을 드리고 물질을 드리는 기쁨을 누리며<br/>생명 되신 예수님을 전합니다.</p><div class="hero-rule"></div><div class="hero-foot"><span>2026. 11. 12 — 11. 15</span><span>SHIGA, JAPAN</span></div></div></header>
 <main><div id="home"><div class="section-top"><h2>MISSION BOARD</h2><span>04 SECTIONS</span></div><div class="menu"><button class="tile" data-page="schedule"><span class="number">01 / SCHEDULE</span><div><div class="symbol"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M16 3v4M8 3v4M3 10h18"/></svg></div><strong>선교 일정</strong><small>4일간의 여정</small></div></button><button class="tile" data-page="songs"><span class="number">02 / WORSHIP</span><div><div class="symbol"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 18V5l12-2v13"/><ellipse cx="6" cy="18" rx="3" ry="2"/><ellipse cx="18" cy="16" rx="3" ry="2"/></svg></div><strong>찬양 연습실</strong><small>찬양 · 가사 · 음원</small></div></button><button class="tile" data-page="phrases"><span class="number">03 / JAPANESE</span><div><div class="symbol"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20 11.5a7.5 7.5 0 0 1-7.5 7.5c-1.1 0-2.2-.2-3.1-.6L4 20l1.6-4.4A7.5 7.5 0 1 1 20 11.5Z"/><path d="M9 11.5h.01M12.5 11.5h.01M16 11.5h.01"/></svg></div><strong>일본어 회화</strong><small>인사 · 일상 · 복음</small></div></button><button class="tile" data-page="prayers"><span class="number">04 / PRAYER</span><div><div class="symbol"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 21s-7-4.5-9-9a5 5 0 0 1 9-4 5 5 0 0 1 9 4c-2 4.5-9 9-9 9Z"/><path d="M12 10v7M9 13.5h6"/></svg></div><strong>기도 제목</strong><small>함께 중보하기</small></div></button></div></div><section class="hidden" id="page"><button class="back" id="backBtn">← 홈으로</button><div class="page-head"><div class="eyebrow" id="pageLabel" style="color:#77968a"></div><h2 id="pageTitle"></h2><p id="pageDesc"></p></div><div id="pageContent"></div></section><section class="hidden admin-area" id="adminPanel"><h2 style="font-size:19px">관리자 설정</h2><p class="status" id="adminStatus"></p><div id="loginForm"><div class="field"><label for="email">이메일</label><input autocomplete="username" id="email" type="email"/></div><div class="field"><label for="password">비밀번호</label><input autocomplete="current-password" id="password" type="password"/></div><button class="action" id="loginBtn">로그인</button></div><div class="hidden" id="loggedIn"><div class="actions"><button class="action secondary" id="logoutBtn">로그아웃</button><button class="action" id="addBtn">새 항목 추가</button></div><div class="field"><label>편집할 메뉴</label><select id="editType"><option value="schedule">선교 일정</option><option value="songs">찬양 연습실</option><option value="phrases">일본어 회화</option><option value="prayers">기도 제목</option></select></div><div id="editList"></div><div class="hidden" id="editorBox" style="margin-top:18px;padding:18px;border:1px solid #cbd8d2;border-radius:16px;background:#fff"><h3 id="editorTitle">항목 편집</h3><div class="field"><label for="itemTitle">제목 / 일본어 문장</label><input id="itemTitle" maxlength="250" type="text"/></div><div class="field"><label for="itemBody">내용 / 일정 / 한국어 뜻</label><textarea id="itemBody" maxlength="20000" rows="5"></textarea></div><div class="hidden" id="songFields"><div class="field"><label for="itemJapanese">일본어 가사</label><textarea id="itemJapanese" rows="5"></textarea></div><div class="field"><label for="itemPronunciation">한글 발음</label><textarea id="itemPronunciation" rows="5"></textarea></div><div class="field"><label for="itemKorean">한국어 가사</label><textarea id="itemKorean" rows="5"></textarea></div><div id="songPartsEditor"></div><div class="field"><label for="itemAudio">음원 URL (선택)</label><input id="itemAudio" placeholder="https://..." type="url"/></div><div class="field"><label for="audioFile">음원 파일 업로드 (MP3, M4A 등 · 최대 30MB)</label><input accept="audio/*" id="audioFile" type="file"/></div><div class="field"><label for="itemScore">악보 URL (선택)</label><input id="itemScore" placeholder="https://..." type="url"/></div></div><p id="editorStatus" class="status" role="status" aria-live="polite"></p><div class="actions"><button class="action" id="saveItem" type="button">Firebase에 저장</button><button class="action secondary" id="cancelItem" type="button">취소</button></div></div></div></section><div class="footer">MARTYS · SHIGA MISSION 2026</div></main>
